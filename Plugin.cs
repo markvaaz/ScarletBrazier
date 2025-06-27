@@ -134,7 +134,10 @@ public static class SetTeamOnSpawnSystemPatch {
 
     foreach (var entity in query) {
       if (entity.IsNull() || !entity.Exists() || !entity.Has<Bonfire>() || !entity.Has<PrefabGUID>() || entity.Read<PrefabGUID>().GuidHash != 1756900697) continue;
-      entity.With((ref Bonfire bonfire) => bonfire.BurnTime = 31536000f);
+      entity.With((ref Bonfire bonfire) => {
+        bonfire.IsActive = true;
+        bonfire.BurnTime = 31536000f;
+      });
     }
   }
 }
