@@ -1,0 +1,10 @@
+{
+  "name": "ScarletBrazier",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/markvaaz/ScarletBrazier",
+  "description": "Makes all braziers burn indefinitely without consuming bones as fuel. Provides perpetual sun protection for vampires without the hassle of constantly feeding braziers with bones. Features global enable/disable and admin commands.",
+  "dependencies": [
+    "BepInEx-BepInExPack_V_Rising-1.733.2",
+    "ScarletMods-ScarletCore-1.1.5"
+  ]
+}
