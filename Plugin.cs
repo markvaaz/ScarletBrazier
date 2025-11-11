@@ -42,13 +42,13 @@ public class Plugin : BasePlugin {
 
     LoadSettings();
 
-    EventManager.OnInitialize += (_, _) => {
+    GameSystems.OnInitialize(() => {
       if (Settings.Get<bool>(ENABLE_GLOBALLY)) {
         SetAllBraziersFree();
       } else {
         ClearAllBraziers();
       }
-    };
+    });
 
     CommandRegistry.RegisterAll();
   }
@@ -130,7 +130,7 @@ public class Plugin : BasePlugin {
       }
 
       var position = player.Position;
-      var brazier = UnitSpawnerService.ImmediateSpawn(new(1756900697), position, 0f, 0f);
+      var brazier = SpawnerService.ImmediateSpawn(new(1756900697), position, 0f, 0f);
 
       brazier.With((ref Bonfire bonfire) => {
         bonfire.IsActive = true;
