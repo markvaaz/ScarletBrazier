@@ -80,13 +80,6 @@ The mod creates a configuration file that allows you to set the default behavior
 
 * **EnableGlobally** (default: true) - If true, all braziers will burn without consuming bones as fuel
 
-## Technical Details
-
-* Braziers are set to burn for approximately 1 year (31,536,000 seconds) when made fuel-free
-* The mod uses Harmony patches to handle newly placed braziers automatically
-* All operations include proper error handling and logging
-* Memory management is handled properly with automatic disposal of entity queries
-
 ## This project is made possible by the contributions of the following individuals:
 
 - **cheesasaurus, EduardoG, Helskog, Mitch, SirSaia, Odjit** & the [V Rising Mod Community on Discord](https://vrisingmods.com/discord)
