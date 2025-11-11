@@ -7,6 +7,7 @@ using ProjectM;
 using ScarletCore;
 using ScarletCore.Data;
 using ScarletCore.Events;
+using ScarletCore.Services;
 using ScarletCore.Systems;
 using ScarletCore.Utils;
 using Stunlock.Core;
@@ -119,6 +120,31 @@ public class Plugin : BasePlugin {
     public static void Force(ChatCommandContext ctx) {
       SetAllBraziersFree();
       ctx.Reply($"All ~Braziers~ have been forced to be free! They now burn indefinitely without fuel.".Format());
+    }
+
+    [Command("spawninvisible", "si", adminOnly: true)]
+    public static void SpawnInvisible(ChatCommandContext ctx) {
+      if (!PlayerService.TryGetById(ctx.User.PlatformId, out var player)) {
+        ctx.Reply("Player not found.".Format());
+        return;
+      }
+
+      var position = player.Position;
+      var brazier = UnitSpawnerService.ImmediateSpawn(new(1756900697), position, 0f, 0f);
+
+      brazier.With((ref Bonfire bonfire) => {
+        bonfire.IsActive = true;
+        bonfire.BurnTime = 31536000f;
+      });
+
+      brazier.With((ref Interactable interactable) => {
+        interactable.Disabled = true;
+      });
+
+      BuffService.TryApplyBuff(brazier, new(1880224358), -1f);
+      BuffService.TryApplyBuff(brazier, new(227784838), -1f);
+
+      ctx.Reply("Spawned an invisible brazier at your location.".Format());
     }
   }
 }
