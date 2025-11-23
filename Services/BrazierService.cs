@@ -39,6 +39,10 @@ public static class BrazierService {
       bonfire.IsActive = true;
       bonfire.BurnTime = 31536000f;
       bonfire.Strength = 1f;
+      bonfire.StartScale = 1f;
+      bonfire.EndScale = 1f;
+      bonfire.TimeToGetToFullStrength = 0f;
+      bonfire.TimeToGetToZeroStrength = 0f;
     });
 
     ActionScheduler.DelayedFrames(() => {
