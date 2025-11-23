@@ -1,6 +1,6 @@
 {
   "name": "ScarletBrazier",
-  "version_number": "1.0.0",
+  "version_number": "1.1.0",
   "website_url": "https://github.com/markvaaz/ScarletBrazier",
   "description": "Makes all braziers burn indefinitely without consuming bones as fuel. Provides perpetual sun protection for vampires without the hassle of constantly feeding braziers with bones.",
   "dependencies": [
