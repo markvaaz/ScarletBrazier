@@ -14,7 +14,6 @@ public static class BrazierService {
   public static readonly PrefabGUID BrazierPrefab = new(1756900697);
   public static readonly PrefabGUID BonePrefab = new(1821405450);
   public static readonly PrefabGUID InvisibleBuff = new(1880224358);
-  public static readonly PrefabGUID ImmaterialBuff = new(1360141727);
   public const float HeightOffset = 100f;
   public const string BrazierIdPrefix = "SBZ_";
   public static Dictionary<string, Entity> InvisibleBraziers = new();
