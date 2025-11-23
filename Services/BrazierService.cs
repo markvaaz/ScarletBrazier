@@ -165,10 +165,10 @@ public static class BrazierService {
   }
 
   public static void LoadInvisibleBraziers() {
+    InvisibleBraziers.Clear();
     var query = EntityLookupService.Query(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
 
     try {
-
       foreach (var brazier in query) {
         if (!brazier.Exists() || !brazier.Has<Bonfire>()) continue;
 
