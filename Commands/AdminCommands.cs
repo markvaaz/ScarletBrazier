@@ -2,7 +2,6 @@ using ScarletBrazier.Services;
 using ScarletCore.Data;
 using VampireCommandFramework;
 using ScarletCore.Services;
-using Unity.Mathematics;
 
 namespace ScarletBrazier.Commands;
 
