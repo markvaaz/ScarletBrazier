@@ -50,23 +50,25 @@ public static class BrazierService {
   }
 
   public static void Show(Entity brazier) {
+    if (!BuffService.HasBuff(brazier, InvisibleBuff)) return;
+
     brazier.With((ref Interactable interactable) => {
       interactable.Disabled = false;
     });
     var position = brazier.Position();
     TeleportService.TeleportToPosition(brazier, new float3(position.x, position.y + HeightOffset, position.z));
     BuffService.TryRemoveBuff(brazier, InvisibleBuff);
-    BuffService.TryRemoveBuff(brazier, ImmaterialBuff);
   }
 
   public static void Hide(Entity brazier) {
+    if (BuffService.HasBuff(brazier, InvisibleBuff)) return;
+
     brazier.With((ref Interactable interactable) => {
       interactable.Disabled = true;
     });
     var position = brazier.Position();
     TeleportService.TeleportToPosition(brazier, new float3(position.x, position.y - HeightOffset, position.z));
     BuffService.TryApplyBuff(brazier, InvisibleBuff, -1f);
-    BuffService.TryApplyBuff(brazier, ImmaterialBuff, -1f);
   }
 
   public static bool ShowRange(float3 position, float range) {
