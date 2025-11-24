@@ -2,6 +2,7 @@ using ScarletBrazier.Services;
 using ScarletCore.Data;
 using VampireCommandFramework;
 using ScarletCore.Services;
+using System.Collections.Generic;
 
 namespace ScarletBrazier.Commands;
 
@@ -77,6 +78,26 @@ public static class AdminCommands {
     } else {
       ctx.Reply($"No invisible brazier was found nearby.".Format());
     }
+  }
+
+  [Command("list", "Lists invisible braziers", adminOnly: true)]
+  public static void List(ChatCommandContext ctx) {
+    if (BrazierService.InvisibleBraziers.Count == 0) {
+      ctx.Reply($"No invisible brazier was found.".Format());
+      return;
+    }
+
+    var lines = new List<string>();
+    foreach (var kv in BrazierService.InvisibleBraziers) {
+      var id = kv.Key;
+      var brazier = kv.Value;
+      if (!brazier.Exists()) continue;
+      var pos = brazier.Position();
+      var visible = !BuffService.HasBuff(brazier, BrazierService.InvisibleBuff);
+      lines.Add($"{id} - {(visible ? "visible" : "hidden")} at X:{pos.x:0.0} Y:{pos.y:0.0} Z:{pos.z:0.0}");
+    }
+
+    ctx.Reply(string.Join("\n", lines).Format());
   }
 
   [Command("hideid", adminOnly: true)]
