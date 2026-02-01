@@ -20,10 +20,10 @@ public static class BrazierService {
 
   public static void Initialize() {
     LoadInvisibleBraziers();
-    if (Plugin.Settings.Get<bool>(BrazierService.ENABLE_GLOBALLY)) {
+    if (Plugin.Settings.Get<bool>(ENABLE_GLOBALLY)) {
       SetAllBraziersFree();
     } else {
-      ClearAllBraziers();
+      DisableAllBraziers();
     }
   }
 
@@ -171,7 +171,7 @@ public static class BrazierService {
 
   public static void LoadInvisibleBraziers() {
     InvisibleBraziers.Clear();
-    var query = EntityLookupService.Query(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
+    var query = EntityLookupService.QueryAll(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
 
     try {
       foreach (var brazier in query) {
@@ -190,7 +190,7 @@ public static class BrazierService {
   }
 
   public static void SetAllBraziersFree() {
-    var query = EntityLookupService.Query(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
+    var query = EntityLookupService.QueryAll(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
 
     try {
       foreach (var brazier in query) {
@@ -206,8 +206,8 @@ public static class BrazierService {
     }
   }
 
-  public static void ClearAllBraziers() {
-    var query = EntityLookupService.Query(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
+  public static void DisableAllBraziers() {
+    var query = EntityLookupService.QueryAll(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
 
     try {
       foreach (var brazier in query) {
@@ -221,6 +221,27 @@ public static class BrazierService {
     } catch (Exception ex) {
       Log.Error($"Error while clearing braziers: {ex.Message}");
       Log.Error(ex.StackTrace);
+    } finally {
+      query.Dispose();
+    }
+  }
+
+  public static void ClearAllBraziers() {
+    var query = EntityLookupService.QueryAll(EntityQueryOptions.IncludeDisabled, typeof(Bonfire));
+
+    try {
+      foreach (var brazier in query) {
+        if (!brazier.Exists() || !brazier.Has<Bonfire>()) continue;
+
+        if (!brazier.IdStartsWith(BrazierIdPrefix)) {
+          brazier.With((ref Bonfire bonfire) => {
+            bonfire.IsActive = false;
+            bonfire.BurnTime = 60f; // Set burn time back to 1 minute to clear the effect
+          });
+        } else {
+          brazier.Destroy();
+        }
+      }
     } finally {
       query.Dispose();
     }

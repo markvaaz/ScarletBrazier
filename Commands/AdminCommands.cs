@@ -1,46 +1,47 @@
 using ScarletBrazier.Services;
 using ScarletCore.Data;
-using VampireCommandFramework;
 using ScarletCore.Services;
 using System.Collections.Generic;
+using ScarletCore.Commanding;
+using ScarletCore.Localization;
 
 namespace ScarletBrazier.Commands;
 
-[CommandGroup("brazier")]
+[CommandGroup("brazier", Language.English, adminOnly: true)]
 public static class AdminCommands {
   public static Settings Settings => Plugin.Settings;
-  [Command("enable", "Enables free braziers globally", adminOnly: true)]
-  public static void Enable(ChatCommandContext ctx) {
+  [Command("enable", Language.English)]
+  public static void Enable(CommandContext ctx) {
     Settings.Set(BrazierService.ENABLE_GLOBALLY, true);
     BrazierService.SetAllBraziersFree();
     ctx.Reply($"~Free Braziers~ have been enabled globally! All braziers now work without needing bones as fuel.".Format());
   }
 
-  [Command("disable", "Disables free braziers globally", adminOnly: true)]
-  public static void Disable(ChatCommandContext ctx) {
+  [Command("disable", Language.English)]
+  public static void Disable(CommandContext ctx) {
     Settings.Set(BrazierService.ENABLE_GLOBALLY, false);
-    BrazierService.ClearAllBraziers();
+    BrazierService.DisableAllBraziers();
     ctx.Reply($"~Free Braziers~ have been disabled globally. Braziers returned to normal operation.".Format());
   }
 
-  [Command("force", "Forces all braziers to be free", adminOnly: true)]
-  public static void Force(ChatCommandContext ctx) {
+  [Command("force", Language.English)]
+  public static void Force(CommandContext ctx) {
     BrazierService.SetAllBraziersFree();
     ctx.Reply($"All ~Braziers~ have been forced to be free! They now burn indefinitely without fuel.".Format());
   }
 
-  [Command("create", adminOnly: true)]
-  public static void SpawnInvisible(ChatCommandContext ctx, string id) {
-    var player = ctx.User.GetPlayerData();
+  [Command("create", Language.English)]
+  public static void SpawnInvisible(CommandContext ctx, string id) {
+    var player = ctx.Sender;
 
     BrazierService.SpawnInvisible(player.Position, id);
 
     ctx.Reply($"An invisible brazier has been spawned at your location with ID '{id}'.".Format());
   }
 
-  [Command("removeid", "rid", adminOnly: true)]
-  public static void RemoveInvisible(ChatCommandContext ctx, string id) {
-    var player = ctx.User.GetPlayerData();
+  [Command("removeid", Language.English)]
+  public static void RemoveInvisible(CommandContext ctx, string id) {
+    var player = ctx.Sender;
 
     if (BrazierService.Remove(id)) {
       ctx.Reply($"The invisible brazier with ID '{id}' has been removed.".Format());
@@ -49,9 +50,9 @@ public static class AdminCommands {
     }
   }
 
-  [Command("remove", "r", adminOnly: true)]
-  public static void RemoveClosestInvisible(ChatCommandContext ctx, float range = 2f) {
-    var player = ctx.User.GetPlayerData();
+  [Command("remove", Language.English)]
+  public static void RemoveClosestInvisible(CommandContext ctx, float range = 2f) {
+    var player = ctx.Sender;
 
     if (BrazierService.Remove(player.Position, range)) {
       ctx.Reply($"All invisible braziers in range have been removed.".Format());
@@ -60,8 +61,8 @@ public static class AdminCommands {
     }
   }
 
-  [Command("showid", adminOnly: true)]
-  public static void ShowInvisibleById(ChatCommandContext ctx, string id) {
+  [Command("showid", Language.English)]
+  public static void ShowInvisibleById(CommandContext ctx, string id) {
     if (BrazierService.ShowById(id)) {
       ctx.Reply($"The invisible brazier with ID '{id}' has been made visible.".Format());
     } else {
@@ -69,9 +70,9 @@ public static class AdminCommands {
     }
   }
 
-  [Command("show", adminOnly: true)]
-  public static void ShowClosestInvisible(ChatCommandContext ctx, float range = 2f) {
-    var player = ctx.User.GetPlayerData();
+  [Command("show", Language.English)]
+  public static void ShowClosestInvisible(CommandContext ctx, float range = 2f) {
+    var player = ctx.Sender;
 
     if (BrazierService.ShowRange(player.Position, range)) {
       ctx.Reply($"All invisible braziers in range have been made visible.".Format());
@@ -80,8 +81,8 @@ public static class AdminCommands {
     }
   }
 
-  [Command("list", "Lists invisible braziers", adminOnly: true)]
-  public static void List(ChatCommandContext ctx) {
+  [Command("list", Language.English)]
+  public static void List(CommandContext ctx) {
     if (BrazierService.InvisibleBraziers.Count == 0) {
       ctx.Reply($"No invisible brazier was found.".Format());
       return;
@@ -100,8 +101,8 @@ public static class AdminCommands {
     ctx.Reply(string.Join("\n", lines).Format());
   }
 
-  [Command("hideid", adminOnly: true)]
-  public static void HideInvisibleById(ChatCommandContext ctx, string id) {
+  [Command("hideid", Language.English)]
+  public static void HideInvisibleById(CommandContext ctx, string id) {
     if (BrazierService.HideById(id)) {
       ctx.Reply($"The invisible brazier with ID '{id}' has been hidden.".Format());
     } else {
@@ -109,9 +110,9 @@ public static class AdminCommands {
     }
   }
 
-  [Command("hide", adminOnly: true)]
-  public static void HideClosestInvisible(ChatCommandContext ctx, float range = 2f) {
-    var player = ctx.User.GetPlayerData();
+  [Command("hide", Language.English)]
+  public static void HideClosestInvisible(CommandContext ctx, float range = 2f) {
+    var player = ctx.Sender;
 
     if (BrazierService.HideRange(player.Position, range)) {
       ctx.Reply($"All invisible braziers in range have been hidden.".Format());
@@ -120,9 +121,9 @@ public static class AdminCommands {
     }
   }
 
-  [Command("goto", adminOnly: true)]
-  public static void GotoInvisibleById(ChatCommandContext ctx, string id) {
-    var player = ctx.User.GetPlayerData();
+  [Command("goto", Language.English)]
+  public static void GotoInvisibleById(CommandContext ctx, string id) {
+    var player = ctx.Sender;
 
     var brazier = BrazierService.GetInvisible(id);
     if (brazier.Exists()) {
@@ -132,5 +133,12 @@ public static class AdminCommands {
     } else {
       ctx.Reply($"No invisible brazier with ID '{id}' was found.".Format());
     }
+  }
+
+  [Command("clearall", Language.English)]
+  public static void ClearAllInvisible(CommandContext ctx) {
+    var count = BrazierService.InvisibleBraziers.Count;
+    BrazierService.ClearAllBraziers();
+    ctx.Reply($"All {count} invisible braziers have been removed.".Format());
   }
 }

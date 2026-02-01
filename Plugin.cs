@@ -4,16 +4,15 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using ScarletBrazier.Services;
+using ScarletCore.Commanding;
 using ScarletCore.Data;
 using ScarletCore.Events;
 using ScarletCore.Systems;
-using VampireCommandFramework;
 
 namespace ScarletBrazier;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("markvaaz.ScarletCore")]
-[BepInDependency("gg.deca.VampireCommandFramework")]
 public class Plugin : BasePlugin {
   static Harmony _harmony;
   public static Harmony Harmony => _harmony;
@@ -35,14 +34,14 @@ public class Plugin : BasePlugin {
 
     LoadSettings();
 
-    CommandRegistry.RegisterAll();
+    CommandHandler.RegisterAll();
 
     GameSystems.OnInitialize(BrazierService.Initialize);
   }
 
   public override bool Unload() {
     _harmony?.UnpatchSelf();
-    CommandRegistry.UnregisterAssembly();
+    CommandHandler.UnregisterAssembly();
     EventManager.UnregisterAssembly(Assembly.GetExecutingAssembly());
     ActionScheduler.UnregisterAssembly(Assembly.GetExecutingAssembly());
     return true;
